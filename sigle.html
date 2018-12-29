@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>sigle</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 不透明单例模式， 缺点：只能靠文档约束来实现单例
+		class SingleObject {
+			login() {
+				console.log('login...')
+			}
+		}
+		SingleObject.getInstance = (function () {
+			let instance = null
+			return function() {
+				if (!instance) {
+					instance = new SingleObject()
+				}
+				return instance
+			}
+		})()
+		let obj1 = SingleObject.getInstance()
+		let obj2 = SingleObject.getInstance()
+
+		// 两个实例new出来是一样的
+		// console.log(obj1 === obj2)
+		// obj2.login()
+		
+		// 透明的单例模式， 以闭包的形式返回构造函数式为了储存instance变量
+		
+		const CreateDiv = (function() {
+			let instance = null
+
+			// 真正的构造函数
+			const CreateDiv = function(html) {
+				// 如果存在实例，则返回实例
+				if (instance) {
+					return instance
+				}
+				// 不存在则实例化
+				this.html = html
+				this.init()
+				return instance = this
+			}
+			CreateDiv.prototype.init = function() {
+				const dom = document.createElement('div')
+				dom.innerHTML = this.html
+				document.body.appendChild(dom)
+			}
+
+			return CreateDiv
+		})()
+
+		// const div1 = new CreateDiv('hello world')
+		// const div2 = new CreateDiv('hello javascript')
+		// console.log(div1 === div2)  // true
+
+
+		// 使用代理类来解耦处理单例和类的逻辑
+		class CreateElement {
+			constructor(tagName, innerHTML) {
+				this.tagName = tagName
+				this.innerHTML = innerHTML
+				this.init()
+			}
+			init() {
+				const dom = document.createElement(this.tagName)
+				dom.innerHTML = this.innerHTML
+				document.body.appendChild(dom)
+			}
+		}
+		// CreateElement类, 负责类的基本逻辑
+		// const p = new CreateElement('p', 'hello proxy')
+
+
+		// 负责实现单例功能
+		const ProxyCreateElement = (function() {
+			let instance = null
+
+			return function() {
+				if (!instance) {
+					instance = new CreateElement(...arguments)
+				}
+				// 如果显示返回一个对象，new构造函数时，实例对象会变成这个对象
+				return instance
+			}
+		})()
+
+		const p1 = new ProxyCreateElement('p', 'hello p')
+		const p2 = new ProxyCreateElement('p', 'hello 1')
+	</script>
+</body>
+</html>

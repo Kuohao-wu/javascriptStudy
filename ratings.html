@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src='http://cdn.bootcss.com/jquery/3.2.1/jquery.js'></script>
+  <style>
+    .ratings{
+      list-style:none;
+      overflow:hidden;
+    }
+    .commet{
+      margin:30px 40px;
+    }
+  </style>
+</head>
+<body>
+  <ul class="ratings" id="ratings">
+
+  </ul>
+  <ul class="ratings" id="ratings1">
+
+  </ul>
+  <script>
+    function Ratings () {
+
+    }
+
+    Ratings.prototype = {
+      num: 0,
+      init: function(el,num,arr,callback) {
+        // 挂载变量和方法到全局使用
+        this.$ratings = $(el)
+        this.num = num
+        this.callback = callback
+        //  执行各个函数
+        this.createElement(arr)
+        this.bindEvent()
+        this.lightON(num)
+      },
+      // 点亮星星函数
+      lightON:function(num) {
+        this.$ratings.children().each(function(_index,item){
+          if(_index < num) {
+            $(item).css('background-position', '0 -32px')
+          }else {
+            $(item).css('background-position', '0 0')
+          }
+        })
+      },
+      // 创建li对象，挂载到父元素
+      createElement:function(arr){
+        arr.forEach(function(item){
+          var li = $('<li>')
+                    .attr({
+                      title: item,
+                      class: 'ratings-item'
+                    })
+                    .css({
+                      'width': '32px',
+                      'height': '32px',
+                      'float': 'left',
+                      'padding-right': '8px',
+                      'background': 'url("http://i1.piimg.com/1949/dbcc555b1333b1c2.png") no-repeat'
+                    })
+          this.$ratings.append(li)
+        },this)
+      },
+      // 绑定事件
+      bindEvent:function(){
+          var _this = this
+          this.$ratings
+            .on('mouseout',function(){
+              _this.lightON(_this.num)
+            })
+            .on('mouseover','.ratings-item',function(){
+              var _index = $(this).index()
+              _this.lightON(_index+1)
+            })
+            .on('click','.ratings-item',function(){
+              var _index = $(this).index()
+              // 保存全局变量   
+              _this.num = _index + 1
+              _title = $(this).attr('title')
+              _this.lightON(_index+1)
+              _this.callback(_this.num,_title)
+           })
+        }
+    }
+
+    // new一个评分实例
+    var ratings1 = new Ratings()
+    var ratings2 = new Ratings()
+
+    // 初始分评分组件
+    ratings1.init('#ratings',2,['不好','一般','好','很好','非常好'],function(num,title){
+      $('#commet').html(`我给${num}分，服务态度${title}`)
+    })
+
+    ratings2.init('#ratings1',0,['不好','一般','好','很好','非常好'],function(num,title){
+      // $('#commet').html(`我给${num}分，服务态度${title}`)
+    })
+
+
+
+  </script>
+</body>
+</html>

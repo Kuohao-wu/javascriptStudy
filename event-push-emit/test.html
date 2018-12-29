@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <button onclick="emit()">发布</button>
+  <script type="text/javascript" src="./main.js"></script>
+  <script type="text/javascript" src="./a.js"></script>
+  <script type="text/javascript">
+    function emit() {
+      event.emit('click', 123)
+      event.emit('click', 456)
+    }
+  </script>
+</body>
+</html>

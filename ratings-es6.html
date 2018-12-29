@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src='http://cdn.bootcss.com/jquery/3.2.1/jquery.js'></script>
+  <style>
+    .ratings{
+      list-style:none;
+      overflow:hidden;
+    }
+    .commet{
+      margin:30px 40px;
+    }
+  </style>
+</head>
+<body>
+  <ul class="ratings" id="ratings">
+
+  </ul>
+  <ul class="ratings" id="ratings1">
+
+  </ul>
+  <p id="commet" class="commet"></p>
+  <script>
+    class Ratings {
+      init(el,num,arr,callback) {
+        // 挂载变量和方法到全局使用
+        this.$ratings = $(el)
+        this.num = num
+        this.callback = callback
+        //  执行各个函数
+        this.createElement(arr)
+        this.bindEvent()
+        this.lightON(num)
+      }
+      // 点亮星星函数
+      lightON(num) {
+        this.$ratings.children().each(function(_index,item){
+          if(_index < num) {
+            $(item).css('background-position', '0 -40px')
+          }else {
+            $(item).css('background-position', '0 0')
+          }
+        })
+      }
+      // 创建li对象，挂载到父元素
+      createElement(arr){
+        arr.forEach(item => {
+          var li = $('<li>')
+                    .attr({
+                      title: item,
+                      class: 'ratings-item'
+                    })
+                    .css({
+                      'width': '30px',
+                      'height': '30px',
+                      'float': 'left',
+                      'padding-right': '6px',
+                      'background': 'url("http://i.niupic.com/images/2017/05/31/iVPGGC.png") no-repeat'
+                    })
+          this.$ratings.append(li)
+        },this)
+      }
+      // 绑定事件
+      bindEvent(){
+          this.$ratings
+            .on('mouseout',()=> {
+              this.lightON(this.num)
+            })
+            .on('mouseover',(evt)=>{
+              var _index = $(evt.target).index()
+              this.lightON(_index+1)
+            })
+            .on('click',(evt)=>{
+              var target = $(evt.target)
+              var _index = target.index()
+              // 保存全局变量   
+              this.num = _index + 1
+              const _title = target.attr('title')
+              this.lightON(_index+1)
+              this.callback(this.num,_title)
+           })
+        }
+    }
+
+    // new一个评分实例
+    var ratings1 = new Ratings()
+    // var ratings2 = new Ratings()
+
+    // 初始分评分组件
+    ratings1.init('#ratings', 2, ['不好','一般','好','很好','非常好'], function(num,title){
+      $('#commet').html(`我给${num}分，服务态度${title}`)
+    })
+
+    // ratings2.init('#ratings1', 0, ['不好','一般','好','很好','非常好'], function(num,title){
+    //   // $('#commet').html(`我给${num}分，服务态度${title}`)
+    // })
+
+
+
+  </script>
+</body>
+</html>

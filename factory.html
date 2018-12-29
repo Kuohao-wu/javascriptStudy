@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>factory</title>
+</head>
+<body>
+	<script type="text/javascript">
+		class Product {
+			constructor(name) {
+				this.name = name
+			}
+			init() {
+				console.log('init')
+			}
+			f1() {
+				console.log('f1')
+			}
+			f2() {
+				console.log('f2')
+			}
+			say() {
+				console.log(this.name)
+			}
+		}
+		class Creator {
+			create(name) {
+				return new Product(name)
+			}
+		}
+
+		// 批量创建多个一样的类
+		const creator = new Creator()
+		const product1 = creator.create('kuoao')
+		const product2 = creator.create('lily')
+		product1.say()
+		product2.say()
+	</script>
+</body>
+</html>
