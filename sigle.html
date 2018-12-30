@@ -29,12 +29,13 @@
 		// obj2.login()
 		
 		// 透明的单例模式， 以闭包的形式返回构造函数式为了储存instance变量
-		
+    
+    // es5实现
 		const CreateDiv = (function() {
 			let instance = null
 
 			// 真正的构造函数
-			const CreateDiv = function(html) {
+			const CreateDivConstructor = function(html) {
 				// 如果存在实例，则返回实例
 				if (instance) {
 					return instance
@@ -44,18 +45,36 @@
 				this.init()
 				return instance = this
 			}
-			CreateDiv.prototype.init = function() {
+			CreateDivConstructor.prototype.init = function() {
 				const dom = document.createElement('div')
 				dom.innerHTML = this.html
 				document.body.appendChild(dom)
 			}
 
-			return CreateDiv
-		})()
+			return CreateDivConstructor
+    })()
+    
+    // es6实现
+    // class CreateDiv {
+    //   constructor(html) {
+    //     const constructor = new.target
+    //     if (!constructor.instance) {
+    //       this.html = html
+    //       this.init()
+    //       constructor.instance = this
+    //     }
+    //     return constructor.instance
+    //   }
+    //   init() {
+    //     const dom = document.createElement('div')
+    //     dom.innerHTML = this.html
+    //     document.body.appendChild(dom)
+    //   }
+    // }
 
-		// const div1 = new CreateDiv('hello world')
-		// const div2 = new CreateDiv('hello javascript')
-		// console.log(div1 === div2)  // true
+		const div1 = new CreateDiv('hello world')
+		const div2 = new CreateDiv('hello javascript')
+		console.log(div1 === div2)  // true
 
 
 		// 使用代理类来解耦处理单例和类的逻辑
@@ -89,7 +108,15 @@
 		})()
 
 		const p1 = new ProxyCreateElement('p', 'hello p')
-		const p2 = new ProxyCreateElement('p', 'hello 1')
+    const p2 = new ProxyCreateElement('p', 'hello 1')
+    
+    /*
+      单例模式虽然简单，但是在项目中的应用场景却是相当多的，
+      单例模式的核心是确保只有一个实例， 并提供全局访问。就像我们只需要一个浏览器的window对象, eventbus全局事件总线。 
+      由于JavaScript代码书写方式十分灵活, 这也导致了如果没有严格的规范的情况下，大型的项目中JavaScript不利于多人协同开发，
+      使用单例模式进行命名空间，管理模块是一个很好的开发习惯，能够有效的解决协同开发变量冲突的问题。
+      灵活使用单例模式，也能够减少不必要的内存开销，提高用于体验
+    */
 	</script>
 </body>
 </html>
