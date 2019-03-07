@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>安全模式</title>
+</head>
+<body>
+  <script>
+    // 不需强制new也可以实例化对象
+    function Person(role) {
+      if (this instanceof Person) {
+        var s = new this[role]()
+        return s;
+      } else {
+        return new Person(role)
+      }
+    }
+    Person.prototype = {
+      admin: function() {
+        this.name = '超级管理员'
+        this.power = ['首页', '通讯录', '发现', '个人中心', '控制台']
+      },
+      normal: function() {
+        this.name = '普通用户'
+        this.power = ['首页', '通讯录', '发现', '个人中心']
+      },
+      visitor: function() {
+        this.name = '游客'
+        this.power = ['首页', '发现']
+      }
+    }
+    const admin = Person('normal')
+  </script>
+</body>
+</html>

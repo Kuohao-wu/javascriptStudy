@@ -77,12 +77,27 @@
 		console.log(div1 === div2)  // true
 
 
-		// 使用代理类来解耦处理单例和类的逻辑
+		// 解耦处理单例和类的逻辑
+
+		// 负责实现单例功能
+		const singleton = (function() {
+			let _instance = null
+			return instance => {
+				if (!_instance) {
+					_instance = instance
+				}
+				return _instance
+			}
+		})()
+
 		class CreateElement {
 			constructor(tagName, innerHTML) {
+        // 如果存在单例对象只返回单例对象
+        if (singleton()) return singleton()
 				this.tagName = tagName
 				this.innerHTML = innerHTML
 				this.init()
+        singleton(this)
 			}
 			init() {
 				const dom = document.createElement(this.tagName)
@@ -91,24 +106,9 @@
 			}
 		}
 		// CreateElement类, 负责类的基本逻辑
-		// const p = new CreateElement('p', 'hello proxy')
-
-
-		// 负责实现单例功能
-		const ProxyCreateElement = (function() {
-			let instance = null
-
-			return function() {
-				if (!instance) {
-					instance = new CreateElement(...arguments)
-				}
-				// 如果显示返回一个对象，new构造函数时，实例对象会变成这个对象
-				return instance
-			}
-		})()
-
-		const p1 = new ProxyCreateElement('p', 'hello p')
-    const p2 = new ProxyCreateElement('p', 'hello 1')
+		const p1 = new CreateElement('p', 'hello proxy')
+		const p2 = new CreateElement('p', 'hello proxy')
+    console.log(p1 === p2)
     
     /*
       单例模式虽然简单，但是在项目中的应用场景却是相当多的，
